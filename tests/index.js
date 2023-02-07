@@ -29,4 +29,40 @@ const caesarCipher = (s) => {
   return ciphered;
 };
 
-export { capitalize, reverse, calculator, caesarCipher };
+const analyzeArray = (arr) => {
+  return {
+    average: getAverage(arr),
+    min: getMin(arr),
+    max: getMax(arr),
+    length: arr.length,
+  };
+};
+const getAverage = (arr) => {
+  let sum = 0;
+  for (let el of arr) {
+    sum += el;
+  }
+  return sum / arr.length;
+};
+
+const getMin = (arr) => {
+  let min = arr[0];
+  for (let el of arr) {
+    if (el < min) {
+      min = el;
+    }
+  }
+  return min;
+};
+
+const getMax = (arr) => {
+  let max = arr[0];
+  for (let el of arr) {
+    if (el > max) {
+      max = el;
+    }
+  }
+  return max;
+};
+
+export { capitalize, reverse, calculator, caesarCipher, analyzeArray };
