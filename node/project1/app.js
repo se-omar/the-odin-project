@@ -1,18 +1,25 @@
-const fs = require("fs/promises");
+const express = require("express");
+const path = require("path");
 
-async function test() {
-  try {
-    const content = "this is a sample text";
-    const data = await fs.readFile("./test.txt", "utf8");
-    console.log("dat is : ", data)
-    console.log("done");
-  } catch (err) {
-    console.log(err);
-  }
-}
-test();
-// fs.writeFile("./test.txt", content, (err) => {
-//   if (err) {
-//     console.log("error", err);
-//   }
-// });
+const app = express();
+const port = 3000;
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "/index.html"));
+});
+
+app.get("/about", (req, res) => {
+  res.sendFile(path.join(__dirname, "/about.html"));
+});
+
+app.get("/contact-me", (req, res) => {
+  res.sendFile(path.join(__dirname, "/contact-me.html"));
+});
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "/404.html"));
+});
+
+app.listen(port, () => {
+  console.log("listening on port ", port);
+});
