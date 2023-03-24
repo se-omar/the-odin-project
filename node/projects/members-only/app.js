@@ -8,6 +8,7 @@ import mongoose from "mongoose";
 dotenv.config();
 
 const app = express();
+const port = 3000;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,16 +16,21 @@ const __dirname = path.dirname(__filename);
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 
-mongoose.set("strictQuery", false);
-const mongoDB = process.env.MONGO_CONN;
+// mongoose.set("strictQuery", false);
+// const mongoDB = process.env.MONGO_CONN;
+//
+// async function dbConnect() {
+//   await mongoose.connect(mongoDB);
+// }
+//
+// dbConnect().catch((err) => console.log(err));
 
-async function dbConnect() {
-  await mongoose.connect(mongoDB);
-}
+app.get("/", (req, res) => {
+  res.render("home");
+});
 
-dbConnect().catch((err) => console.log(err));
-
-// routes here
+// app.use("/users");
+// app.use("/messages");
 
 app.use((req, res, next) => {
   next(createError(404));
@@ -38,6 +44,10 @@ app.use((err, req, res) => {
 
   res.status(err.status || 500);
   res.render("error");
+});
+
+app.listen(port, () => {
+  console.log(`members only app listening on port ${port}`);
 });
 
 export default app;
