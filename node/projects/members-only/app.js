@@ -4,6 +4,7 @@ import * as dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 import mongoose from "mongoose";
+import userRouter from "./routes/userRouter.js";
 
 dotenv.config();
 
@@ -29,7 +30,7 @@ app.get("/", (req, res) => {
   res.render("home");
 });
 
-// app.use("/users");
+app.use("/users", userRouter);
 // app.use("/messages");
 
 app.use((req, res, next) => {
