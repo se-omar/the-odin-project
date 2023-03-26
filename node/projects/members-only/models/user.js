@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
-import { isEmail } from "validator";
+import validator from "validator";
+
+const { isEmail } = validator;
 
 const { Schema } = mongoose;
 
@@ -9,7 +11,6 @@ const UserSchema = new Schema({
   email: { type: String, required: true, validate: [isEmail, "invalid email"] },
   membership: {
     type: String,
-    required: true,
     enum: ["User", "Member", "Admin"],
     default: "User",
   },
