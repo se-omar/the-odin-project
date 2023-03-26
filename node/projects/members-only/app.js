@@ -31,7 +31,7 @@ app.get("/", (req, res) => {
   res.render("home");
 });
 
-app.use("/users", userRouter);
+app.use("/user", userRouter);
 app.use("/message", messageRouter);
 
 app.use((req, res, next) => {
