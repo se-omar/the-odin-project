@@ -5,6 +5,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import mongoose from "mongoose";
 import userRouter from "./routes/userRouter.js";
+import messageRouter from "./routes/messageRouter.js";
 
 dotenv.config();
 
@@ -17,21 +18,21 @@ const __dirname = path.dirname(__filename);
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 
-// mongoose.set("strictQuery", false);
-// const mongoDB = process.env.MONGO_CONN;
-//
-// async function dbConnect() {
-//   await mongoose.connect(mongoDB);
-// }
-//
-// dbConnect().catch((err) => console.log(err));
+mongoose.set("strictQuery", false);
+const mongoDB = process.env.MONGO_CONN;
+
+async function dbConnect() {
+  await mongoose.connect(mongoDB);
+}
+
+dbConnect().catch((err) => console.log(err));
 
 app.get("/", (req, res) => {
   res.render("home");
 });
 
 app.use("/users", userRouter);
-// app.use("/messages");
+app.use("/message", messageRouter);
 
 app.use((req, res, next) => {
   next(createError(404));
