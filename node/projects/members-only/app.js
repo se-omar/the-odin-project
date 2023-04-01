@@ -34,13 +34,14 @@ dbConnect().catch((err) => console.log(err));
 
 app.use(session({ secret: "omar", resave: false, saveUninitialized: true }));
 passport.use(
-  new LocalStrategy(async (email, password, done) => {
+  new LocalStrategy(async (username, password, done) => {
     try {
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ email: username });
       if (!user) {
         return done(null, false, { message: "Incorrect email" });
       }
-      if (!await bcryptjs.compare(password, user.password)) {
+      const isPassCorrect = await bcryptjs.compare(password, user.password);
+      if (!isPassCorrect) {
         return done(null, false, { message: "Incorrect password" });
       }
       return done(null, user);

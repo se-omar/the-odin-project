@@ -8,6 +8,18 @@ export const signInGet = (req, res, next) => {
   res.render("sign-in");
 };
 
+export const signInPost = (req, res, next) => {
+  passport.authenticate("local", (err, user, opt) => {
+    if (opt) {
+      res.render("sign-in", {
+        errors: [{ msg: opt.message }],
+      });
+    } else {
+      res.redirect("/");
+    }
+  })(req, res, next);
+};
+
 export const signUpGet = (req, res, next) => {
   console.log("sign up page");
   res.render("sign-up", {
@@ -61,7 +73,7 @@ export const signUpPost = [
 
       return res.redirect("/");
     } catch (err) {
-      console.log(err);
+      return console.log(err);
     }
   },
 ];

@@ -9,4 +9,6 @@ router.get("/sign-up", userController.signUpGet);
 
 router.post("/sign-up", userController.signUpPost);
 
+router.post("/sign-in", userController.signInPost);
+
 export default router;
