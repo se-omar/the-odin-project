@@ -4,8 +4,13 @@ import * as dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 import mongoose from "mongoose";
+import passport from "passport";
+import LocalStrategy from "passport-local";
+import bcryptjs from "bcryptjs";
+import session from "express-session";
 import userRouter from "./routes/userRouter.js";
 import messageRouter from "./routes/messageRouter.js";
+import User from "./models/user.js";
 
 dotenv.config();
 
@@ -27,6 +32,39 @@ async function dbConnect() {
 
 dbConnect().catch((err) => console.log(err));
 
+app.use(session({ secret: "omar", resave: false, saveUninitialized: true }));
+passport.use(
+  new LocalStrategy(async (email, password, done) => {
+    try {
+      const user = await User.findOne({ email });
+      if (!user) {
+        return done(null, false, { message: "Incorrect email" });
+      }
+      if (!await bcryptjs.compare(password, user.password)) {
+        return done(null, false, { message: "Incorrect password" });
+      }
+      return done(null, user);
+    } catch (err) {
+      return done(err);
+    }
+  }),
+);
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (err) {
+    done(err);
+  }
+});
+
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 

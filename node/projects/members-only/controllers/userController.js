@@ -1,5 +1,6 @@
 import { body, validationResult } from "express-validator";
 import bcryptjs from "bcryptjs";
+import passport from "passport";
 import User from "../models/user.js";
 
 export const signInGet = (req, res, next) => {
@@ -33,25 +34,34 @@ export const signUpPost = [
     .escape(),
 
   async (req, res) => {
-    const hashedPass = await bcryptjs.hash(req.body.password, 3);
-    console.log("birth date: ", req.body.birth_date);
-    const user = new User({
-      first_name: req.body.first_name,
-      last_name: req.body.last_name,
-      email: req.body.email,
-      birth_date: req.body.birth_date,
-      password: hashedPass,
-    });
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      console.log("errors: ", errors);
       return res.render("sign-up", {
         title: "sign up page",
         errors: errors.array(),
       });
     }
-    await user.save();
-    console.log("request body: ", req.body);
-    return res.redirect("/");
+    try {
+      const oldUser = await User.findOne({ email: req.body.email });
+      if (oldUser) {
+        return res.render("sign-up", {
+          title: "sign up page",
+          errors: [{ msg: "user already exists" }],
+        });
+      }
+      const hashedPass = await bcryptjs.hash(req.body.password, 3);
+      const newUser = new User({
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+        email: req.body.email,
+        birth_date: req.body.birth_date,
+        password: hashedPass,
+      });
+      await newUser.save();
+
+      return res.redirect("/");
+    } catch (err) {
+      console.log(err);
+    }
   },
 ];
