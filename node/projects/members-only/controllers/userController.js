@@ -8,20 +8,12 @@ export const signInGet = (req, res, next) => {
   res.render("sign-in");
 };
 
-export const signInPost = (req, res, next) => {
-  passport.authenticate("local", (err, user, opt) => {
-    if (opt) {
-      res.render("sign-in", {
-        errors: [{ msg: opt.message }],
-      });
-    } else {
-      res.redirect("/");
-    }
-  })(req, res, next);
-};
+export const signInPost = passport.authenticate("local", {
+  successRedirect: "/",
+  failureRedirect: "/user/sign-in",
+});
 
 export const signUpGet = (req, res, next) => {
-  console.log("sign up page");
   res.render("sign-up", {
     title: "sign up page title",
   });
